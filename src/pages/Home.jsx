@@ -1,10 +1,17 @@
+import { useEffect, useState } from 'react'
 import { Container, Button, Row } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import movies from '../data/movies'
 import MovieCard from '../components/MovieCard'
 
-export default function Home({ setWatchlist, watchlist }) {
+export default function Home({ watchlist, setWatchlist }) {
   const navigate = useNavigate()
+  const [movies, setMovies] = useState([])
+
+  useEffect(() => {
+    fetch("https://api.themoviedb.org/3/movie/popular?api_key=52aa639edc2d50d3fd922e9385ed04bc")
+      .then(res => res.json())
+      .then(data => setMovies(data.results.slice(0, 6))) // only 4 movies
+  }, [])
 
   const addToWatchlist = (movie) => {
     if (!watchlist.find(m => m.id === movie.id)) {
@@ -12,15 +19,12 @@ export default function Home({ setWatchlist, watchlist }) {
     }
   }
 
-  // take first 3 movies as featured
-  const featured = movies.slice(0, 3)
-
   return (
     <Container style={{ padding: '30px' }}>
-      
-      {/* HERO SECTION */}
+
+      {/* HERO */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1>🎬 Betterboxd</h1>
+        <h1>Betterboxd 🎬</h1>
         <p>Discover movies and build your personal watchlist.</p>
 
         <Button onClick={() => navigate('/browse')}>
@@ -28,24 +32,17 @@ export default function Home({ setWatchlist, watchlist }) {
         </Button>
       </div>
 
-      {/* FEATURED MOVIES */}
-      <h3>Featured Movies</h3>
+      {/* FEATURED */}
+      <h3>Popular Movies</h3>
       <Row>
-        {featured.map(movie => (
-          <MovieCard 
-            key={movie.id} 
-            movie={movie} 
-            addToWatchlist={addToWatchlist} 
+        {movies.map(movie => (
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+            addToWatchlist={addToWatchlist}
           />
         ))}
       </Row>
-
-      {/* EXTRA INFO */}
-      <div style={{ marginTop: '40px', textAlign: 'center' }}>
-        <p>
-          Save movies, keep track of what you've watched, and never forget what to watch next.
-        </p>
-      </div>
 
     </Container>
   )
