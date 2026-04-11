@@ -20,11 +20,14 @@ export default function Browse({ watchlist, setWatchlist }) {
     })
 }, [])
 
-  const addToWatchlist = (movie) => {
-    if (!watchlist.find(m => m.id === movie.id)) {
-      setWatchlist([...watchlist, movie])
-    }
+ const addToWatchlist = (movie) => {
+  if (!watchlist.find(m => m.id === movie.id)) {
+    setWatchlist([...watchlist, movie])
+    alert(`${movie.title} added to watchlist!`)
+  } else {
+    alert(`${movie.title} is already in your watchlist.`)
   }
+}
 
   const filtered = movies.filter(m =>
     m.title.toLowerCase().includes(search.toLowerCase())

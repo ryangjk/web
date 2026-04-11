@@ -3,9 +3,10 @@ import WatchlistItem from '../components/WatchlistItem'
 export default function Watchlist({ watchlist, setWatchlist }) {
 
   const remove = (id) => {
-    setWatchlist(watchlist.filter(m => m.id !== id))
-  }
-
+  const movie = watchlist.find(m => m.id === id)
+  setWatchlist(watchlist.filter(m => m.id !== id))
+  alert(`${movie.title} removed from watchlist.`)
+}
   return (
     <div style={{ padding: '20px' }}>
       <h2>My Watchlist</h2>

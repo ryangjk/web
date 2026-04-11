@@ -13,11 +13,14 @@ export default function Home({ watchlist, setWatchlist }) {
       .then(data => setMovies(data.results.slice(0, 6))) // only 4 movies
   }, [])
 
-  const addToWatchlist = (movie) => {
-    if (!watchlist.find(m => m.id === movie.id)) {
-      setWatchlist([...watchlist, movie])
-    }
+ const addToWatchlist = (movie) => {
+  if (!watchlist.find(m => m.id === movie.id)) {
+    setWatchlist([...watchlist, movie])
+    alert(`${movie.title} added to watchlist!`)
+  } else {
+    alert(`${movie.title} is already in your watchlist.`)
   }
+}
 
   return (
     <Container style={{ padding: '30px' }}>

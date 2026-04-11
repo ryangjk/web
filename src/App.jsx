@@ -8,6 +8,9 @@ import Watchlist from './pages/Watchlist'
 function App() {
   const [watchlist, setWatchlist] = useState([])
 
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState("")
+
   // load from localStorage
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("watchlist")) || []
