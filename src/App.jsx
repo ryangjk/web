@@ -7,10 +7,23 @@ import Watchlist from './pages/Watchlist'
 import Activity from './pages/Activity'
 
 function App() {
-  const [watchlist, setWatchlist] = useState([])
-  const [watchedMovies, setWatchedMovies] = useState([])
-  const [loved, setLoved] = useState({})
-  const [ratings, setRatings] = useState({})
+
+  // 🔥 LOAD FROM LOCAL STORAGE (CORRECT WAY)
+  const [watchlist, setWatchlist] = useState(() => {
+    return JSON.parse(localStorage.getItem("watchlist")) || []
+  })
+
+  const [watchedMovies, setWatchedMovies] = useState(() => {
+    return JSON.parse(localStorage.getItem("watchedMovies")) || []
+  })
+
+  const [loved, setLoved] = useState(() => {
+    return JSON.parse(localStorage.getItem("loved")) || {}
+  })
+
+  const [ratings, setRatings] = useState(() => {
+    return JSON.parse(localStorage.getItem("ratings")) || {}
+  })
 
   // 🔹 ADD TO WATCHLIST
   const addToWatchlist = (movie) => {
@@ -41,7 +54,9 @@ function App() {
     }))
 
     const inActivity = watchedMovies.some(m => m.id === movie.id)
-    if (!inActivity) markAsWatched(movie)
+    if (!inActivity) {
+      markAsWatched(movie)
+    }
   }
 
   // 🔹 RATE MOVIE
@@ -71,20 +86,7 @@ function App() {
     setWatchlist(prev => [...prev, movie])
   }
 
-  // 🔹 LOAD FROM LOCAL STORAGE
-  useEffect(() => {
-    const savedWatchlist = JSON.parse(localStorage.getItem("watchlist")) || []
-    const savedWatched = JSON.parse(localStorage.getItem("watchedMovies")) || []
-    const savedLoved = JSON.parse(localStorage.getItem("loved")) || {}
-    const savedRatings = JSON.parse(localStorage.getItem("ratings")) || {}
-
-    setWatchlist(savedWatchlist)
-    setWatchedMovies(savedWatched)
-    setLoved(savedLoved)
-    setRatings(savedRatings)
-  }, [])
-
-  // 🔹 SAVE TO LOCAL STORAGE
+  // 🔥 SAVE TO LOCAL STORAGE
   useEffect(() => {
     localStorage.setItem("watchlist", JSON.stringify(watchlist))
   }, [watchlist])
