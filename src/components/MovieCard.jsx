@@ -30,24 +30,20 @@ export default function MovieCard({
         <Card.Title>{movie.title}</Card.Title>
 
         <Card.Text>
-          <span style={{
-            color: movie.vote_average >= 7 ? '#4caf50' :
-                   movie.vote_average >= 5 ? '#ffc107' : '#f44336'
-          }}>
-            ⭐ {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
-          </span>
-        </Card.Text>
-
-        <Card.Text>
-          {movie.release_date?.split("-")[0]}
+          ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
         </Card.Text>
 
         <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+          
           <Button
             disabled={isAdded || isWatched || isLoved}
             onClick={() => addToWatchlist(movie)}
           >
-            {isAdded ? "Added ✓" : isWatched || isLoved ? "In Activity ✓" : "Add"}
+            {isAdded
+              ? "Added ✓"
+              : isWatched || isLoved
+              ? "In Activity ✓"
+              : "Add to Watchlist"}
           </Button>
 
           <Button
@@ -55,7 +51,7 @@ export default function MovieCard({
             disabled={isWatched || isLoved}
             onClick={() => markAsWatched(movie)}
           >
-            {isWatched || isLoved ? "Watched ✓" : "Watched"}
+            {isWatched || isLoved ? "Watched ✓" : "Mark Watched"}
           </Button>
 
           <Button

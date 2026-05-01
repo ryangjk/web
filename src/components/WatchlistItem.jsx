@@ -12,12 +12,9 @@ export default function WatchlistItem({
   rateMovie
 }) {
 
-  // helper to display stars
   const renderStars = (value) => {
     return [1,2,3,4,5].map(i => (
-      <span key={i}>
-        {i <= value ? "★" : "☆"}
-      </span>
+      <span key={i}>{i <= value ? "★" : "☆"}</span>
     ))
   }
 
@@ -32,7 +29,6 @@ export default function WatchlistItem({
       }}
     >
       
-      {/* POSTER */}
       <img
         src={
           movie.poster_path
@@ -49,16 +45,11 @@ export default function WatchlistItem({
         }}
       />
 
-      {/* LEFT SIDE */}
       <div style={{ flex: 1 }}>
 
-        <h5 style={{ marginBottom: '5px' }}>
-          {movie.title}
-        </h5>
+        <h5>{movie.title}</h5>
 
-        <p style={{ marginBottom: '10px' }}>
-          ⭐ {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
-        </p>
+        <p>⭐ {movie.vote_average?.toFixed(1) || "N/A"}</p>
 
         {/* WATCHLIST MODE */}
         {!activityMode && (
@@ -69,7 +60,7 @@ export default function WatchlistItem({
               onClick={() => markAsWatched(movie)}
               style={{ marginRight: '10px' }}
             >
-              Watched
+              Mark Watched
             </Button>
 
             <Button 
@@ -86,7 +77,7 @@ export default function WatchlistItem({
               size="sm"
               onClick={() => remove(movie.id)}
             >
-              Remove
+              Remove from Watchlist
             </Button>
           </>
         )}
@@ -108,26 +99,23 @@ export default function WatchlistItem({
               size="sm"
               onClick={() => removeFromActivity(movie)}
             >
-              Remove
+              Remove from Activity
             </Button>
           </>
         )}
       </div>
 
-      {/* ⭐ RIGHT SIDE RATING */}
+      {/* ⭐ RATING (UNCHANGED) */}
       {activityMode && (
         <div style={{ textAlign: 'center' }}>
-
-          {/* CURRENT RATING DISPLAY */}
           <div style={{ marginBottom: '5px', fontSize: '18px' }}>
             {rating ? renderStars(rating) : "☆☆☆☆☆"}
           </div>
 
           <div style={{ fontSize: '12px', marginBottom: '8px', color: '#666' }}>
-            {rating ? `Your Rating` : `Rate Movie`}
+            {rating ? "Your Rating" : "Rate Movie"}
           </div>
 
-          {/* STAR BUTTONS */}
           <div style={{ display: 'flex', gap: '4px' }}>
             {[1,2,3,4,5].map(num => (
               <Button
@@ -135,16 +123,12 @@ export default function WatchlistItem({
                 size="sm"
                 variant={rating === num ? "warning" : "outline-warning"}
                 onClick={() => rateMovie(movie.id, num)}
-                style={{
-                  padding: '4px 6px',
-                  fontSize: '12px'
-                }}
+                style={{ padding: '4px 6px', fontSize: '12px' }}
               >
                 ★
               </Button>
             ))}
           </div>
-
         </div>
       )}
 
