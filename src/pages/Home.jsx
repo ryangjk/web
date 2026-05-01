@@ -3,7 +3,14 @@ import { Container, Button, Row } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import MovieCard from '../components/MovieCard'
 
-export default function Home({ watchlist, setWatchlist }) {
+export default function Home({
+  watchlist,
+  watchedMovies,
+  loved,
+  toggleLoved,
+  addToWatchlist,
+  markAsWatched
+}) {
   const navigate = useNavigate()
   const [movies, setMovies] = useState([])
 
@@ -13,18 +20,8 @@ export default function Home({ watchlist, setWatchlist }) {
       .then(data => setMovies(data.results.slice(0, 6)))
   }, [])
 
-  const addToWatchlist = (movie) => {
-    if (!watchlist.find(m => m.id === movie.id)) {
-      setWatchlist([...watchlist, { ...movie, watched: false }]) // ✅ FIXED
-      alert(`${movie.title} added to watchlist!`)
-    } else {
-      alert(`${movie.title} is already in your watchlist.`)
-    }
-  }
-
   return (
     <Container style={{ padding: '30px' }}>
-
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1>Betterboxd 🎬</h1>
         <p>Discover movies and build your personal watchlist.</p>
@@ -35,17 +32,21 @@ export default function Home({ watchlist, setWatchlist }) {
       </div>
 
       <h3>Popular Movies</h3>
+
       <Row>
         {movies.map(movie => (
           <MovieCard
             key={movie.id}
             movie={movie}
             addToWatchlist={addToWatchlist}
-            watchlist={watchlist}   // ✅ FIXED
+            watchlist={watchlist}
+            watchedMovies={watchedMovies}
+            loved={loved?.[movie.id]}
+            toggleLoved={toggleLoved}
+            markAsWatched={markAsWatched}
           />
         ))}
       </Row>
-
     </Container>
   )
 }

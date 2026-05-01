@@ -1,59 +1,39 @@
 import { useState } from 'react'
-import { Button } from 'react-bootstrap'
 import WatchlistItem from '../components/WatchlistItem'
+import SortDropdown from '../components/SortDropdown'
 
-export default function Watchlist({ watchlist, setWatchlist }) {
+export default function Watchlist({ watchlist, setWatchlist, loved, toggleLoved, markAsWatched }) {
 
-  const [filter, setFilter] = useState("all")
+  const [sort, setSort] = useState("none")
 
-  // ❌ remove movie
   const remove = (id) => {
     setWatchlist(watchlist.filter(m => m.id !== id))
   }
 
-  // ⭐ toggle watched
-  const toggleWatched = (id) => {
-    setWatchlist(
-      watchlist.map(m =>
-        m.id === id ? { ...m, watched: !m.watched } : m
-      )
-    )
-  }
+  let sortedMovies = [...watchlist]
 
-  // 🔍 filter logic
-  const filtered = watchlist.filter(m => {
-    if (filter === "watched") return m.watched
-    if (filter === "unwatched") return !m.watched
-    return true
-  })
+  if (sort === "title") {
+    sortedMovies.sort((a, b) => a.title.localeCompare(b.title))
+  } else if (sort === "rating") {
+    sortedMovies.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0))
+  }
 
   return (
     <div style={{ padding: '20px' }}>
       <h2>My Watchlist</h2>
 
-      {/* FILTER BUTTONS */}
-      <div style={{ marginBottom: '15px' }}>
-        <Button onClick={() => setFilter("all")} style={{ marginRight: '5px' }}>
-          All
-        </Button>
-        <Button onClick={() => setFilter("watched")} style={{ marginRight: '5px' }}>
-          Watched
-        </Button>
-        <Button onClick={() => setFilter("unwatched")}>
-          Unwatched
-        </Button>
-      </div>
+      <SortDropdown value={sort} setValue={setSort} />
 
-      {/* EMPTY STATE */}
-      {filtered.length === 0 && <p>No movies here.</p>}
+      {sortedMovies.length === 0 && <p>No movies here.</p>}
 
-      {/* LIST */}
-      {filtered.map(movie => (
-        <WatchlistItem 
-          key={movie.id} 
-          movie={movie} 
+      {sortedMovies.map(movie => (
+        <WatchlistItem
+          key={movie.id}
+          movie={movie}
           remove={remove}
-          toggleWatched={toggleWatched}
+          loved={loved?.[movie.id]}
+          toggleLoved={toggleLoved}
+          markAsWatched={markAsWatched}
         />
       ))}
     </div>

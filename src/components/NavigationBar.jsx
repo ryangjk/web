@@ -10,6 +10,7 @@ export default function NavigationBar() {
           <Nav.Link as={Link} to="/">Home</Nav.Link>
           <Nav.Link as={Link} to="/browse">Browse</Nav.Link>
           <Nav.Link as={Link} to="/watchlist">Watchlist</Nav.Link>
+          <Nav.Link as={Link} to="/activity">Activity</Nav.Link>
         </Nav>
       </Container>
     </Navbar>

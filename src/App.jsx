@@ -4,35 +4,117 @@ import NavigationBar from './components/NavigationBar'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
 import Watchlist from './pages/Watchlist'
+import Activity from './pages/Activity'
 
 function App() {
   const [watchlist, setWatchlist] = useState([])
+  const [watchedMovies, setWatchedMovies] = useState([])
+  const [loved, setLoved] = useState({})
+  const [ratings, setRatings] = useState({}) // ⭐ NEW
 
-  const [showToast, setShowToast] = useState(false)
-  const [toastMessage, setToastMessage] = useState("")
+  const addToWatchlist = (movie) => {
+    const inWatchlist = watchlist.some(m => m.id === movie.id)
+    const inActivity = watchedMovies.some(m => m.id === movie.id)
 
-  // load from localStorage
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("watchlist")) || []
-    setWatchlist(saved)
-  }, [])
+    if (!inWatchlist && !inActivity) {
+      setWatchlist([...watchlist, movie])
+    }
+  }
 
-  // save to localStorage
-  useEffect(() => {
-    localStorage.setItem("watchlist", JSON.stringify(watchlist))
-  }, [watchlist])
+  const markAsWatched = (movie) => {
+    const exists = watchedMovies.some(m => m.id === movie.id)
+
+    if (!exists) {
+      setWatchedMovies(prev => [...prev, movie])
+    }
+
+    setWatchlist(prev => prev.filter(m => m.id !== movie.id))
+  }
+
+  const toggleLoved = (movie) => {
+    setLoved(prev => ({
+      ...prev,
+      [movie.id]: !prev[movie.id]
+    }))
+
+    const inActivity = watchedMovies.some(m => m.id === movie.id)
+    if (!inActivity) markAsWatched(movie)
+  }
+
+  // ⭐ RATE MOVIE
+  const rateMovie = (movieId, value) => {
+    setRatings(prev => ({
+      ...prev,
+      [movieId]: value
+    }))
+  }
+
+  // REMOVE FROM ACTIVITY
+  const removeFromActivity = (movie) => {
+    setWatchedMovies(prev => prev.filter(m => m.id !== movie.id))
+
+    setLoved(prev => {
+      const copy = { ...prev }
+      delete copy[movie.id]
+      return copy
+    })
+
+    setRatings(prev => {
+      const copy = { ...prev }
+      delete copy[movie.id]
+      return copy
+    })
+
+    setWatchlist(prev => [...prev, movie])
+  }
 
   return (
     <>
       <NavigationBar />
 
       <Routes>
-        <Route 
-            path="/" 
-          element={<Home watchlist={watchlist} setWatchlist={setWatchlist} />} 
+        <Route path="/" element={
+          <Home
+            watchlist={watchlist}
+            watchedMovies={watchedMovies}
+            addToWatchlist={addToWatchlist}
+            loved={loved}
+            toggleLoved={toggleLoved}
+            markAsWatched={markAsWatched}
           />
-        <Route path="/browse" element={<Browse watchlist={watchlist} setWatchlist={setWatchlist} />} />
-        <Route path="/watchlist" element={<Watchlist watchlist={watchlist} setWatchlist={setWatchlist} />} />
+        } />
+
+        <Route path="/browse" element={
+          <Browse
+            watchlist={watchlist}
+            watchedMovies={watchedMovies}
+            addToWatchlist={addToWatchlist}
+            loved={loved}
+            toggleLoved={toggleLoved}
+            markAsWatched={markAsWatched}
+          />
+        } />
+
+        <Route path="/watchlist" element={
+          <Watchlist
+            watchlist={watchlist}
+            setWatchlist={setWatchlist}
+            loved={loved}
+            toggleLoved={toggleLoved}
+            markAsWatched={markAsWatched}
+          />
+        } />
+
+        <Route path="/activity" element={
+          <Activity
+            watchedMovies={watchedMovies}
+            loved={loved}
+            toggleLoved={toggleLoved}
+            removeFromActivity={removeFromActivity}
+            ratings={ratings}
+            rateMovie={rateMovie}
+          />
+        } />
       </Routes>
     </>
   )
