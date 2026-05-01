@@ -10,8 +10,9 @@ function App() {
   const [watchlist, setWatchlist] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
   const [loved, setLoved] = useState({})
-  const [ratings, setRatings] = useState({}) // ⭐ NEW
+  const [ratings, setRatings] = useState({})
 
+  // 🔹 ADD TO WATCHLIST
   const addToWatchlist = (movie) => {
     const inWatchlist = watchlist.some(m => m.id === movie.id)
     const inActivity = watchedMovies.some(m => m.id === movie.id)
@@ -21,6 +22,7 @@ function App() {
     }
   }
 
+  // 🔹 MARK AS WATCHED
   const markAsWatched = (movie) => {
     const exists = watchedMovies.some(m => m.id === movie.id)
 
@@ -31,6 +33,7 @@ function App() {
     setWatchlist(prev => prev.filter(m => m.id !== movie.id))
   }
 
+  // 🔹 TOGGLE LOVE
   const toggleLoved = (movie) => {
     setLoved(prev => ({
       ...prev,
@@ -41,7 +44,7 @@ function App() {
     if (!inActivity) markAsWatched(movie)
   }
 
-  // ⭐ RATE MOVIE
+  // 🔹 RATE MOVIE
   const rateMovie = (movieId, value) => {
     setRatings(prev => ({
       ...prev,
@@ -49,7 +52,7 @@ function App() {
     }))
   }
 
-  // REMOVE FROM ACTIVITY
+  // 🔹 REMOVE FROM ACTIVITY
   const removeFromActivity = (movie) => {
     setWatchedMovies(prev => prev.filter(m => m.id !== movie.id))
 
@@ -67,6 +70,36 @@ function App() {
 
     setWatchlist(prev => [...prev, movie])
   }
+
+  // 🔹 LOAD FROM LOCAL STORAGE
+  useEffect(() => {
+    const savedWatchlist = JSON.parse(localStorage.getItem("watchlist")) || []
+    const savedWatched = JSON.parse(localStorage.getItem("watchedMovies")) || []
+    const savedLoved = JSON.parse(localStorage.getItem("loved")) || {}
+    const savedRatings = JSON.parse(localStorage.getItem("ratings")) || {}
+
+    setWatchlist(savedWatchlist)
+    setWatchedMovies(savedWatched)
+    setLoved(savedLoved)
+    setRatings(savedRatings)
+  }, [])
+
+  // 🔹 SAVE TO LOCAL STORAGE
+  useEffect(() => {
+    localStorage.setItem("watchlist", JSON.stringify(watchlist))
+  }, [watchlist])
+
+  useEffect(() => {
+    localStorage.setItem("watchedMovies", JSON.stringify(watchedMovies))
+  }, [watchedMovies])
+
+  useEffect(() => {
+    localStorage.setItem("loved", JSON.stringify(loved))
+  }, [loved])
+
+  useEffect(() => {
+    localStorage.setItem("ratings", JSON.stringify(ratings))
+  }, [ratings])
 
   return (
     <>
